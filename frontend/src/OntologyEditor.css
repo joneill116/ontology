@@ -1,0 +1,18 @@
+.ontology-editor {
+  display: flex;
+  gap: 2rem;
+}
+
+.ontology-section {
+  margin-bottom: 2rem;
+}
+
+.ontology-list {
+  margin-top: 1rem;
+  padding-left: 1.5rem;
+}
+
+.ontology-message {
+  color: green;
+  margin-bottom: 0.5rem;
+}

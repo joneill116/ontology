@@ -1,0 +1,224 @@
+openapi: 3.0.3
+info:
+  title: Ontology API
+  version: 1.0.0
+  description: API for managing ontologies (classes, properties, constraints)
+servers:
+  - url: http://localhost:5000
+paths:
+  /classes:
+    post:
+      summary: Create a new ontology class
+      security:
+        - basicAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                label:
+                  type: string
+                comment:
+                  type: string
+                parent:
+                  type: string
+              required:
+                - name
+      responses:
+        '201':
+          description: Class created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    get:
+      summary: Get all ontology classes
+      responses:
+        '200':
+          description: List of classes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+  /properties:
+    post:
+      summary: Create a new ontology property
+      security:
+        - basicAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                type:
+                  type: string
+                  enum: [object, data]
+                domain:
+                  type: string
+                range:
+                  type: string
+                label:
+                  type: string
+                comment:
+                  type: string
+              required:
+                - name
+                - type
+      responses:
+        '201':
+          description: Property created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    get:
+      summary: Get all ontology properties
+      responses:
+        '200':
+          description: List of properties
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+  /constraints:
+    post:
+      summary: Add a constraint to an ontology class/property
+      security:
+        - basicAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                class:
+                  type: string
+                property:
+                  type: string
+                type:
+                  type: string
+                  enum: [minCardinality, maxCardinality, exactCardinality]
+                value:
+                  type: integer
+              required:
+                - class
+                - property
+                - type
+                - value
+      responses:
+        '201':
+          description: Constraint added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /export:
+    get:
+      summary: Export the ontology
+      security:
+        - basicAuth: []
+      parameters:
+        - name: format
+          in: query
+          schema:
+            type: string
+            default: turtle
+      responses:
+        '200':
+          description: Ontology file
+          content:
+            text/turtle:
+              schema:
+                type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /import:
+    post:
+      summary: Import ontology from file
+      security:
+        - basicAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                format:
+                  type: string
+                  default: turtle
+      responses:
+        '201':
+          description: Ontology imported
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          description: No file uploaded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+  schemas:
+    SuccessResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        data:
+          type: object
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: error
+        error:
+          type: string

@@ -1,0 +1,29 @@
+.error-notification {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #d32f2f;
+  color: #fff;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  z-index: 9999;
+   display: flex;
+   align-items: center;
+   gap: 1rem;
+}
+
+.error-notification__close {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.5rem;
+  cursor: pointer;
+  margin-left: 1rem;
+  padding: 0 0.5rem;
+  border-radius: 4px;
+}
+.error-notification__close:focus {
+  outline: 2px solid #fff;
+}
