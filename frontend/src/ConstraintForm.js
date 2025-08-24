@@ -1,12 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 import "./ConstraintForm.css";
-
-import React from "react";
-import PropTypes from "prop-types";
-import "./ConstraintForm.css";
 import useFormValidation from "./useFormValidation";
 
+function ConstraintForm({ constraintForm, classes, properties, onChange, onSubmit, error }) {
   // i18n messages
   const messages = {
     addConstraint: "Add Constraint",
@@ -26,7 +23,7 @@ import useFormValidation from "./useFormValidation";
   const errorId = "constraint-form-error";
 
   // Shared validation hook
-  const { error, validate } = useFormValidation({
+  const { error: validationError, validate } = useFormValidation({
     fields: ["class", "property", "type", "value"],
     messages,
     validators: {
@@ -134,6 +131,7 @@ import useFormValidation from "./useFormValidation";
       )}
     </form>
   );
+}
 // ...existing code...
 
 ConstraintForm.propTypes = {

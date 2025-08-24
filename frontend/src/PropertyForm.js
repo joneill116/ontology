@@ -11,6 +11,7 @@ import PropTypes from "prop-types";
 import "./PropertyForm.css";
 import useFormValidation from "./useFormValidation";
 
+function PropertyForm({ propertyForm, classes, onChange, onSubmit, error }) {
   // i18n messages
   const messages = {
     addProperty: "Add Property",
@@ -33,7 +34,7 @@ import useFormValidation from "./useFormValidation";
   const errorId = "property-form-error";
 
   // Shared validation hook
-  const { error, validate } = useFormValidation({
+  const { error: validationError, validate } = useFormValidation({
     fields: ["name", "type", "domain", "range"],
     messages,
     validators: {
@@ -166,6 +167,9 @@ import useFormValidation from "./useFormValidation";
       )}
     </form>
   );
+}
+
+export default PropertyForm;
 // ...existing code...
 
 

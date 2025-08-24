@@ -4,9 +4,98 @@ import PropertyForm from "./PropertyForm";
 import ConstraintForm from "./ConstraintForm";
 import HierarchyTree from "./HierarchyTree";
 
-const API_URL = "http://localhost:5000";
+const API_URL = "http://127.0.0.1:5000/api";
 
 function OntologyEditor({ token, setGlobalError }) {
+  // Add missing handlers for form changes and submissions
+  const handleClassChange = e => {
+    const { name, value } = e.target;
+    setClassForm(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handlePropertyChange = e => {
+    const { name, value } = e.target;
+    setPropertyForm(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleConstraintChange = e => {
+    const { name, value } = e.target;
+    setConstraintForm(prev => ({ ...prev, [name]: value }));
+  };
+
+  const submitClass = async ({ sanitizedForm }) => {
+    setMessage("");
+    setGlobalError("");
+    try {
+      const res = await fetch(`${API_URL}/classes`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(sanitizedForm)
+      });
+      if (res.status === 200) {
+        setMessage("Class added successfully.");
+        setClassForm({ name: "", label: "", comment: "", parent: "" });
+        setClasses(await (await fetch(`${API_URL}/classes`)).json());
+      } else {
+        const data = await res.json();
+        setGlobalError(data.error || "Failed to add class.");
+      }
+    } catch (e) {
+      setGlobalError("Network error.");
+    }
+  };
+
+  const submitProperty = async ({ sanitizedForm }) => {
+    setMessage("");
+    setGlobalError("");
+    try {
+      const res = await fetch(`${API_URL}/properties`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(sanitizedForm)
+      });
+      if (res.status === 200) {
+        setMessage("Property added successfully.");
+        setPropertyForm({ name: "", type: "object", domain: "", range: "", label: "", comment: "" });
+        setProperties(await (await fetch(`${API_URL}/properties`)).json());
+      } else {
+        const data = await res.json();
+        setGlobalError(data.error || "Failed to add property.");
+      }
+    } catch (e) {
+      setGlobalError("Network error.");
+    }
+  };
+
+  const submitConstraint = async ({ sanitizedForm }) => {
+    setMessage("");
+    setGlobalError("");
+    try {
+      const res = await fetch(`${API_URL}/constraints`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(sanitizedForm)
+      });
+      if (res.status === 200) {
+        setMessage("Constraint added successfully.");
+        setConstraintForm({ class: "", property: "", type: "minCardinality", value: "" });
+      } else {
+        const data = await res.json();
+        setGlobalError(data.error || "Failed to add constraint.");
+      }
+    } catch (e) {
+      setGlobalError("Network error.");
+    }
+  };
   const mainContentRef = useRef(null);
   const [classes, setClasses] = useState([]);
   const [properties, setProperties] = useState([]);

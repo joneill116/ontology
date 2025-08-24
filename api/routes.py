@@ -84,7 +84,15 @@ def create_ontology_api(service):
                 parent=data.get("parent")
             )
             logger.info(f"Class created: {data['name'].strip()}")
-            return success_response(status=201)
+            # Return the created class data and status 200 for frontend compatibility
+            return success_response({
+                "class": {
+                    "name": data["name"].strip(),
+                    "label": data.get("label"),
+                    "comment": data.get("comment"),
+                    "parent": data.get("parent")
+                }
+            }, status=200)
         except Exception as e:
             logger.error(f"Error creating class: {e}", exc_info=True)
             return error_response(f"Internal error: {str(e)}", 500)

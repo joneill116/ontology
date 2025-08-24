@@ -1,12 +1,10 @@
-import React from "react";
-import PropTypes from "prop-types";
-import "./ClassForm.css";
 
 import React from "react";
 import PropTypes from "prop-types";
 import "./ClassForm.css";
 import useFormValidation from "./useFormValidation";
 
+function ClassForm({ classForm, classes, onChange, onSubmit, error }) {
   // i18n messages
   const messages = {
     addClass: "Add Class",
@@ -23,7 +21,7 @@ import useFormValidation from "./useFormValidation";
   const errorId = "class-form-error";
 
   // Shared validation hook
-  const { error, validate } = useFormValidation({
+  const { error: validationError, validate } = useFormValidation({
     fields: ["name"],
     messages,
     validators: {
@@ -120,6 +118,7 @@ import useFormValidation from "./useFormValidation";
       )}
     </form>
   );
+}
 // ...existing code...
 
 ClassForm.propTypes = {

@@ -1,12 +1,27 @@
+from flask import request
+# Ensure all OPTIONS requests return HTTP 200 for CORS preflight
+
 from flask import Flask
-from api.routes import ontology_api
+from api.routes import create_ontology_api
+from services.ontology_service import OntologyService
 from config import Config
+from flask_cors import CORS
+
+
 
 
 app = Flask(__name__)
 app.config.from_object(Config)
-app.register_blueprint(ontology_api)
+service = OntologyService()
+ontology_api = create_ontology_api(service)
+app.register_blueprint(ontology_api, url_prefix='/api')
+CORS(app, supports_credentials=True, allow_headers=["Content-Type", "Authorization"], methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"])
 
+
+@app.before_request
+def handle_options():
+    if request.method == 'OPTIONS':
+        return '', 200
 
 # Centralized error handling
 @app.errorhandler(400)
